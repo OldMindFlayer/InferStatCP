@@ -82,31 +82,37 @@ We can see, that in 1972 there was one dominant answer "Always wrong", and in 20
 ## Part 4: Inference
 
 For statistical inference first let's formulate **hypotheses test**:  
-*H0 (nothing going on):* Attitude to homosexual relations and years are **independent**. Attitude dictribution **does not vary** by the years.  
-*HA (something going on):* Attitude to homosexual relations and years are **dependent**. Attitude dictribution **does vary** by the years.  
+*H0 (nothing going on):* Attitude to homosexual relations and survey years are **independent**. Attitude dictribution **does not vary** by the survey years.  
+*HA (something going on):* Attitude to homosexual relations and survey years are **dependent**. Attitude dictribution **does vary** by the survey years.  
 
 Conditions check list:  
 1. **Independence**  
-    * independently drawn sample  
-    * sampling without replacement -> <10% of population  
-    * each case only contributes to one cell in the table  
-2. **Sample size:** each particular cell must have at least 5 expected cases.  
+    * independently drawn sample (by the data description)  
+    * sampling without replacement -> <10% of population (survey contain < then 10% of all adult population of USA)  
+    * each case only contributes to one cell in the table (one case - one answer)
+2. **Sample size:** each particular cell must have at least 5 expected cases. (let's check it later)
 
-This are hypotheses with 2 categorical variables, and at least one of them has multiple levels, so I will use the **Chi-Square Independence test**.  
-For Chi-square testing there is no associated confidence interval method.  
+This are hypotheses with 2 categorical variables, and at least one of them has multiple levels, so I will use the **Chi-Square Independence test** with significance level a = 0.05.    
+For Chi-square testing there is no associated confidence interval method or other methods to compare.  
 Let's again look at the table representation of the data:
 ```{r}
 contingency_table <- table(dataset)
 print(contingency_table)
 ```
-Now let's look at the expected counts for this table:  
+Now let's look at the expected counts for this table (each of them are evaluated as (row total)*(column total)/(table total))
 ```{r}
 chisq.test(contingency_table)$expected
 ```
-All conditios in the check list are met, now let's conduct Chi-Square Independence test:
+Each cell has at least 5 expected cases, so all conditios in the check list for theoretical Chi-Square test are met.  
+Now we need to calculate the sum of ([O]-[E])^2/[E] values (Chi-Square) and evaluate p-value by Chi-Square statistics with appropriate degrees of freedom.  
+In R it's ease to use build-in "chisq.test" function.
 ```{r}
 chisq.test(contingency_table)
 ```
-p-value is very low (2.2e-16), so we reject the null hypothesis in favour of alternative hypothesis:  
+p-value is very low (2.2e-16), it is much lower then significance level (0.05), so we reject the null hypothesis in favour of alternative hypothesis: Attitude to homosexual relations and years are dependent. Attitude dictribution does vary by the years.  
+There is 2.2e-16 chance that observed or more extreme outcome would be obtained if the null hypothesis is true (Attitude to homosexual relations and survey years are independent). 
 
-Attitude to homosexual relations and years are dependent. Attitude dictribution does vary by the years.  
+## Summary
+Analysis shows, that distributions of answers to the survey question "What about sexual relations between two adults of the same sex?" are sighificantly different in 1977 and 2012 years. Even if attitude was ordered categorical variable with many levels, our research question doesn't show direction, in which attitude changed.  
+In future research it would be interesting to explore the dynamics of attitude to homosexual relations in all available years.  
+

@@ -223,16 +223,15 @@ Let’s look how our variables distribute:</p>
 <div id="part-4-inference" class="section level2">
 <h2>Part 4: Inference</h2>
 <p>For statistical inference first let’s formulate <strong>hypotheses test</strong>:<br />
-<em>H0 (nothing going on):</em> Attitude to homosexual relations and years are <strong>independent</strong>. Attitude dictribution <strong>does not vary</strong> by the years.<br />
-<em>HA (something going on):</em> Attitude to homosexual relations and years are <strong>dependent</strong>. Attitude dictribution <strong>does vary</strong> by the years.</p>
+<em>H0 (nothing going on):</em> Attitude to homosexual relations and survey years are <strong>independent</strong>. Attitude dictribution <strong>does not vary</strong> by the survey years.<br />
+<em>HA (something going on):</em> Attitude to homosexual relations and survey years are <strong>dependent</strong>. Attitude dictribution <strong>does vary</strong> by the survey years.</p>
 <p>Conditions check list:<br />
 1. <strong>Independence</strong><br />
-* independently drawn sample<br />
-* sampling without replacement -&gt; &lt;10% of population<br />
-* each case only contributes to one cell in the table<br />
-2. <strong>Sample size:</strong> each particular cell must have at least 5 expected cases.</p>
-<p>This are hypotheses with 2 categorical variables, and at least one of them has multiple levels, so I will use the <strong>Chi-Square Independence test</strong>.<br />
-For Chi-square testing there is no associated confidence interval method.<br />
+* independently drawn sample (by the data description)<br />
+* sampling without replacement -&gt; &lt;10% of population (survey contain &lt; then 10% of all adult population of USA)<br />
+* each case only contributes to one cell in the table (one case - one answer) 2. <strong>Sample size:</strong> each particular cell must have at least 5 expected cases. (let’s check it later)</p>
+<p>This are hypotheses with 2 categorical variables, and at least one of them has multiple levels, so I will use the <strong>Chi-Square Independence test</strong> with significance level a = 0.05.<br />
+For Chi-square testing there is no associated confidence interval method or other methods to compare.<br />
 Let’s again look at the table representation of the data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">contingency_table &lt;-<span class="st"> </span><span class="kw">table</span>(dataset)
 <span class="kw">print</span>(contingency_table)</code></pre></div>
@@ -240,21 +239,28 @@ Let’s again look at the table representation of the data:</p>
 ## year   Always Wrong Almst Always Wrg Sometimes Wrong Not Wrong At All
 ##   1977         1044               84             109              216
 ##   2012          567               37              82              553</code></pre>
-<p>Now let’s look at the expected counts for this table:</p>
+<p>Now let’s look at the expected counts for this table (each of them are evaluated as (row total)*(column total)/(table total))</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chisq.test</span>(contingency_table)<span class="op">$</span>expected</code></pre></div>
 <pre><code>##       homosex
 ## year   Always Wrong Almst Always Wrg Sometimes Wrong Not Wrong At All
 ##   1977     869.5331         65.30944       103.09175         415.0658
 ##   2012     741.4669         55.69056        87.90825         353.9342</code></pre>
-<p>All conditios in the check list are met, now let’s conduct Chi-Square Independence test:</p>
+<p>Each cell has at least 5 expected cases, so all conditios in the check list for theoretical Chi-Square test are met.<br />
+Now we need to calculate the sum of ([O]-[E])^2/[E] values (Chi-Square) and evaluate p-value by Chi-Square statistics with appropriate degrees of freedom.<br />
+In R it’s ease to use build-in “chisq.test” function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">chisq.test</span>(contingency_table)</code></pre></div>
 <pre><code>## 
 ##  Pearson's Chi-squared test
 ## 
 ## data:  contingency_table
 ## X-squared = 295.85, df = 3, p-value &lt; 2.2e-16</code></pre>
-<p>p-value is very low (2.2e-16), so we reject the null hypothesis in favour of alternative hypothesis:</p>
-<p>Attitude to homosexual relations and years are dependent. Attitude dictribution does vary by the years.</p>
+<p>p-value is very low (2.2e-16), it is much lower then significance level (0.05), so we reject the null hypothesis in favour of alternative hypothesis: Attitude to homosexual relations and years are dependent. Attitude dictribution does vary by the years.<br />
+There is 2.2e-16 chance that observed or more extreme outcome would be obtained if the null hypothesis is true (Attitude to homosexual relations and survey years are independent).</p>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>Analysis shows, that distributions of answers to the survey question “What about sexual relations between two adults of the same sex?” are sighificantly different in 1977 and 2012 years. Even if attitude was ordered categorical variable with many levels, our research question doesn’t show direction, in which attitude changed.<br />
+In future research it would be interesting to explore the dynamics of attitude to homosexual relations in all available years.</p>
 </div>
 
 
